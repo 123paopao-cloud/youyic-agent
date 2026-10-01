@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>优益C校园营销助手</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231B7A4A'/%3E%3Ctext x='32' y='43' font-size='28' font-weight='bold' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E7%9B%8AC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #F2F7F3;
+    color: #1F2937;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== 顶部品牌栏 ===== */
+  .topbar {
+    background: linear-gradient(135deg, #1B7A4A 0%, #2D9D63 100%);
+    color: #fff;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 12px rgba(27,122,74,.25);
+    z-index: 10;
+    flex-shrink: 0;
+  }
+  .brand-icon {
+    width: 40px; height: 40px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 15px;
+    color: #1B7A4A;
+    flex-shrink: 0;
+    letter-spacing: -1px;
+  }
+  .brand-text h1 { font-size: 17px; font-weight: 700; line-height: 1.3; }
+  .brand-text p { font-size: 12px; opacity: .85; margin-top: 2px; font-weight: 300; }
+  .topbar-tag {
+    margin-left: auto;
+    background: rgba(255,255,255,.18);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* ===== 快捷问题条 ===== */
+  .quick-bar {
+    background: #fff;
+    padding: 10px 16px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    border-bottom: 1px solid #E3EDE6;
+    flex-shrink: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+  .quick-bar::-webkit-scrollbar { display: none; }
+  .quick-btn {
+    background: #EAF5EE;
+    color: #1B7A4A;
+    border: 1px solid #C8E2D2;
+    padding: 10px 16px;
+    min-height: 40px;
+    border-radius: 20px;
+    font-size: 13px;
+    line-height: 1.4;
+    white-space: nowrap;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .2s;
+    flex-shrink: 0;
+  }
+  .quick-btn:hover { background: #D9ECDF; border-color: #1B7A4A; }
+  .quick-btn:active { transform: scale(.96); }
+
+  /* ===== 聊天容器 ===== */
+  .chat-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+  /* ===== 欢迎区域 ===== */
+  .welcome-area {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    background: radial-gradient(ellipse at top, #E8F5ED 0%, #F2F7F3 60%);
+  }
+  .welcome-card {
+    max-width: 620px;
+    width: 100%;
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 44px;
+    box-shadow: 0 8px 40px rgba(27,122,74,.1);
+    text-align: center;
+  }
+  .welcome-badge {
+    display: inline-block;
+    background: #E3F2E9;
+    color: #1B7A4A;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 5px 14px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+  }
+  .welcome-card h2 {
+    font-size: 26px;
+    font-weight: 900;
+    color: #14532D;
+    margin-bottom: 10px;
+  }
+  .welcome-card > p {
+    font-size: 14px;
+    color: #5A7A66;
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+  .feature-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 30px;
+    text-align: left;
+  }
+  .feature-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: #F7FBF8;
+    border: 1px solid #E3EDE6;
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .feature-num {
+    font-size: 13px;
+    font-weight: 900;
+    color: #1B7A4A;
+    background: #E3F2E9;
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .feature-item strong { display: block; font-size: 14px; color: #1F2937; }
+  .feature-item span { font-size: 12px; color: #7A9485; margin-top: 2px; display: block; }
+  .open-chat-btn {
+    background: linear-gradient(135deg, #1B7A4A, #2D9D63);
+    color: #fff;
+    border: none;
+    padding: 14px 44px;
+    border-radius: 26px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 4px 16px rgba(27,122,74,.3);
+    transition: transform .2s;
+  }
+  .open-chat-btn:hover { transform: translateY(-2px); }
+  .welcome-tip { font-size: 12px; color: #94A89C; margin-top: 14px; margin-bottom: 0; }
+
+  /* ===== 加载提示 ===== */
+  .loading-mask {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: #F2F7F3;
+    z-index: 5;
+    transition: opacity .4s;
+  }
+  .loading-mask.hidden { opacity: 0; pointer-events: none; }
+  .loading-dot {
+    width: 44px; height: 44px;
+    border: 3px solid #C8E2D2;
+    border-top-color: #1B7A4A;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-mask p { font-size: 13px; color: #5A7A66; }
+
+  /* ===== 手机端适配 ===== */
+  @media (max-width: 600px) {
+    .topbar { padding: 14px 16px; }
+    .brand-icon { width: 38px; height: 38px; font-size: 14px; }
+    .brand-text h1 { font-size: 16px; }
+    .brand-text p { font-size: 12px; }
+    .topbar-tag { display: none; }
+    .quick-bar { padding: 10px 12px; gap: 9px; }
+    .quick-btn { padding: 11px 16px; min-height: 44px; font-size: 13px; }
+    .welcome-area { padding: 20px 14px; align-items: flex-start; }
+    .welcome-card { padding: 28px 22px; border-radius: 16px; }
+    .welcome-card h2 { font-size: 21px; }
+    .feature-row { grid-template-columns: 1fr; gap: 10px; }
+    .open-chat-btn { width: 100%; padding: 14px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- 顶部品牌栏 -->
+  <div class="topbar">
+    <div class="brand-icon">益C</div>
+    <div class="brand-text">
+      <h1>优益C校园营销助手</h1>
+      <p>久坐不动 · 肠活动 · AI种草智能体</p>
+    </div>
+    <div class="topbar-tag">蒙牛优益C杯参赛作品</div>
+  </div>
+
+  <!-- 快捷问题 -->
+  <div class="quick-bar">
+    <button class="quick-btn" onclick="askQuick(this)">写3条开学季小红书笔记</button>
+    <button class="quick-btn" onclick="askQuick(this)">考试周营销点子</button>
+    <button class="quick-btn" onclick="askQuick(this)">抖音口播脚本</button>
+    <button class="quick-btn" onclick="askQuick(this)">分析大学生用户画像</button>
+    <button class="quick-btn" onclick="askQuick(this)">毕业季创意方案</button>
+  </div>
+
+  <!-- 主体欢迎区 -->
+  <div class="chat-wrap">
+    <div class="loading-mask" id="loadingMask">
+      <div class="loading-dot"></div>
+      <p>智能体加载中...</p>
+    </div>
+    <div class="welcome-area">
+      <div class="welcome-card">
+        <div class="welcome-badge">AI Agent</div>
+        <h2>你的校园营销智能搭档</h2>
+        <p>输入一个营销需求，AI自动完成热点洞察、用户分析、多平台内容生成</p>
+        <div class="feature-row">
+          <div class="feature-item">
+            <div class="feature-num">01</div>
+            <div><strong>热点雷达</strong><span>实时捕捉校园话题</span></div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-num">02</div>
+            <div><strong>用户画像</strong><span>精准定位学生人群</span></div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-num">03</div>
+            <div><strong>内容生成</strong><span>小红书/抖音/朋友圈</span></div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-num">04</div>
+            <div><strong>爆款预判</strong><span>预估内容传播潜力</span></div>
+          </div>
+        </div>
+        <button class="open-chat-btn" onclick="try{sdkClient.showChatBot();}catch(e){}">开始对话</button>
+        <p class="welcome-tip">聊天窗口将自动弹出，如未弹出请点此按钮或右下角悬浮球</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coze Chat SDK -->
+  <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.20/libs/cn/index.js"></script>
+  <script>
+    var BOT_ID = '7690961636668194852';
+    var PAT_TOKEN = 'pat_lEQsPrpopdzZGlDAwh6pArRqW4SkJE8QtThgWyJvqrfJ7IQkWMq6zu6OyAfRyOOB';
+    var sdkClient = null;
+
+    function initSDK() {
+      var isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+      try {
+        sdkClient = new CozeWebSDK.WebChatClient({
+          config: {
+            type: 'bot',
+            bot_id: BOT_ID,
+            isIframe: false
+          },
+          auth: {
+            type: 'token',
+            token: PAT_TOKEN,
+            onRefreshToken: function () { return PAT_TOKEN; }
+          },
+          ui: {
+            base: {
+              layout: isMobile ? 'mobile' : 'pc',
+              lang: 'zh-CN',
+              zIndex: 1000
+            },
+            asstBtn: { isNeed: true },
+            header: { isShow: true, isNeedClose: true },
+            chatBot: {
+              title: '优益C校园营销助手',
+              uploadable: true,
+              isNeedAudio: true,
+              isNeedFunctionCallMessage: false,
+              isNeedAddNewConversation: true,
+              isNeedQuote: false
+            }
+          }
+        });
+        // 自动弹出聊天窗口
+        setTimeout(function () {
+          try { sdkClient.showChatBot(); } catch(e) { console.warn('showChatBot:', e); }
+          var mask = document.getElementById('loadingMask');
+          mask.classList.add('hidden');
+          setTimeout(function(){ mask.style.display='none'; }, 500);
+        }, 800);
+      } catch (e) {
+        document.querySelector('.loading-mask p').textContent = '加载失败，请刷新重试：' + e.message;
+        console.error('SDK init error:', e);
+      }
+    }
+
+    // 快捷问题：打开聊天窗并自动发送
+    function askQuick(btn) {
+      var text = btn.textContent.trim();
+      var promptMap = {
+        '写3条开学季小红书笔记': '帮我写3条开学季图书馆场景的小红书笔记，要自然植入优益C',
+        '考试周营销点子': '考试周快到了，帮我想几个优益C的校园营销点子，结合图书馆久坐场景',
+        '抖音口播脚本': '帮我写一条抖音口播脚本，主题是久坐肠道不活动，开头3秒要有钩子',
+        '分析大学生用户画像': '分析一下优益C在大学生群体里的目标人群画像，分几类人',
+        '毕业季创意方案': '帮我想一个毕业季优益C校园传播创意方案'
+      };
+      var fullText = promptMap[text] || text;
+
+      try { sdkClient.showChatBot(); } catch(e) {}
+
+      setTimeout(function () {
+        var textarea = document.querySelector('textarea');
+        if (!textarea) return;
+        textarea.focus();
+        textarea.value = fullText;
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+        setTimeout(function () {
+          var btns = document.querySelectorAll('button');
+          for (var i = btns.length - 1; i >= 0; i--) {
+            var b = btns[i];
+            if (!b.disabled && b.querySelector('svg') && b.offsetParent !== null) { b.click(); break; }
+          }
+        }, 300);
+      }, 400);
+    }
+
+    // 等SDK脚本加载完再初始化
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      setTimeout(initSDK, 100);
+    } else {
+      window.addEventListener('DOMContentLoaded', initSDK);
+    }
+  </script>
+</body>
+</html>
